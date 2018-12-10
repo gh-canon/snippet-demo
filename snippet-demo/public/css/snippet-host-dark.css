@@ -1,0 +1,187 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: #d5d5d5;
+    font-family: sans-serif;
+    font-size: 10pt;
+}
+body {
+    height: 100vh;
+    display: grid;
+    grid-gap: 1px;
+    grid-template-columns: 50% auto;
+    grid-template-rows: min-content auto;    
+}
+form {
+    display: none;
+}
+.snippet-console, iframe {
+    display: block;
+    border: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #333;
+    overflow-y: auto;
+}
+iframe {
+    height: 100%;
+    background-image: linear-gradient(45deg, #444 25%, transparent 25%), linear-gradient(-45deg, #444 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #444 75%), linear-gradient(-45deg, transparent 75%, #444 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+.snippet-console {
+    font-family: 'Ubuntu Mono', monospace;
+    line-height: 12pt;
+}
+.console-line {
+    border-bottom: 1px solid #4e4e4e;
+    padding: 4px 6px;
+    animation: console-flash 500ms forwards;
+    background-color: rgba(255,255,0,.25);
+}
+.console-value[data-id]{
+    cursor: default;
+}
+.editor-tile{
+    background-color: #333;
+    padding: 3px 6px;
+}
+.console-object-map {
+    padding: 0 0 0 1em;
+    margin: 0 0 0 0;
+    list-style: none;
+}
+dl {
+    margin: 0;
+    padding: 0 0 0 22px;
+    white-space: pre-wrap;
+}
+dt,dd{
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+dt {
+    color: #d267da;
+}
+dt[data-proxy="true"]{
+    font-style: italic;
+}
+dt[data-enumerable="false"]:not([data-proxy="true"]) {
+    color: #96509c;
+}
+.console-value[data-type="undefined"],
+.console-value[data-type="null"]{
+    color: #7f7f7f;
+}
+.console-property-collapsed::before,
+.console-property-expanded::before,
+.console-value-collapsed > .console-value-label::before,
+.console-value-expanded > .console-value-label::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    box-sizing: border-box;
+    border: 4px solid transparent;
+    border-left-color: #8d8d8d;
+    border-right: none;
+    transform: translateY(.5px) scaleX(1.5);
+    margin: 0 4px 1px 2px;
+}
+.console-property-collapsed,
+.console-property-expanded {
+    position: relative;
+}
+
+dd > .console-value > .console-value-label::before {
+    display: none;
+}
+
+.console-property-collapsed::before {
+    position: absolute;
+    margin: 0;
+    top: 2px;
+    left: -9px;
+}
+.console-property-expanded::before,
+.console-value-expanded > .console-value-label::before {
+    transform: translateY(.5px) rotate(90deg) scaleX(1.5);
+}
+.console-value[data-type="string"],
+.console-value[data-sub-type="RegExp"] > .console-value-label {
+    color: #e93f3b;
+}
+
+.console-value[data-type="string"] span,
+.console-value[data-sub-type="Date"] > .console-value-label {
+    color: #d5d5d5;
+}
+.console-value-keyword,
+.console-value[data-type="boolean"],
+.console-value[data-type="number"] {
+    color: #9980ff;
+}
+
+.console-value[data-type="object"]:not([data-sub-type="RegExp"]):not([data-sub-type="Date"]){
+    font-style: italic;
+}
+
+dl .console-value[data-type="object"]:not([data-sub-type="RegExp"]):not([data-sub-type="Date"]) {
+    font-style: normal;
+}
+
+.console-value[data-type="function"] > .console-value-label {
+    font-style: italic;
+}
+.console-value-function-prefix {
+    color: #556af2;
+}
+.console-value-details {
+    margin-left: 2px;
+}
+.console-value-expanded > .console-value-label > .console-value-details {
+    display: none;
+}
+.console-value-collapsed > .console-value-label > .console-value-details {
+    display: inline;
+    font-style: normal;
+    color: #d5d5d5;
+}
+dl .console-value-collapsed[data-type="object"]:not([data-sub-type="RegExp"]):not([data-sub-type="Date"]) > .console-value-label {
+    color: #7f7f7f;
+}
+.console-value-expanded > .console-value-details {
+    display: inline;
+    font-style: normal;
+    color: #d5d5d5;
+}
+
+.console-value-collapsed > .console-value-details {
+    display: none;
+}
+
+@keyframes console-flash {
+    0% {
+        background-color: rgba(255,255,0, .25);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+::-webkit-scrollbar {
+    width: .5em;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+    background: #222;
+    border-left: 1px solid #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4e4e4e;
+    outline: 1px solid #000;
+    border-left: 1px solid #000;
+}

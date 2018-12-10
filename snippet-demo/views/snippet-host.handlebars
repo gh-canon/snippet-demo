@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>snippet-host</title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
+    <link href="/css/snippet-host-dark.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="editor-tile">demo</div>
+    <div class="editor-tile">console</div>
+    <iframe id="snippet-render-frame" name="snippet-render-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts"></iframe>
+    <div class="snippet-output snippet-console"></div>
+    <form method="post" action="/snippet-render" target="snippet-render-frame">
+        <input type="hidden" name="html" value="{{html}}" />
+        <input type="hidden" name="js" value="{{js}}" />
+        <input type="hidden" name="css" value="{{css}}" />
+    </form>
+    <script src="/js/console-receiver.js"></script>
+</body>
+</html>

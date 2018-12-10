@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>snippet-editor</title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
+    <link href="/css/snippet-editor.css" rel="stylesheet" />
+</head>
+<body>
+    <form class="editor" action="/snippet-host" method="POST" target="snippet-host-frame">
+        <label for="html">html</label>
+        <label for="js">js</label>
+        <label for="css">css</label>
+        <textarea id="html" name="html"></textarea>
+        <textarea id="js" name="js">document.addEventListener("wheel", e => console.log(e));</textarea>
+        <textarea id="css" name="css"></textarea>
+        <iframe class="output-frame" id="snippet-host-frame" name="snippet-host-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts"></iframe>
+    </form>
+    <script src="/js/snippet-editor.js"></script>
+</body>
+</html>
