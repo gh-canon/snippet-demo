@@ -4,6 +4,8 @@
 
     const snippetConsole = document.querySelector(".snippet-console");
 
+    const demoFrame = document.querySelector("iframe");
+
     function hydrate(...values) {
 
         let frag = document.createDocumentFragment();
@@ -34,7 +36,7 @@
 
                         let filteredProps = Object.keys(value).filter(k => !filters.includes(k));
 
-                        if (value.className != null) {
+                        if (value.className) {
                             node.className = value.className;
                         }
 
@@ -291,12 +293,10 @@
 
         snippetConsole.appendChild(hydrate(argStub));
 
-        let frameWindow = document.querySelector("iframe").contentWindow;
-
         while (snippetConsole.childNodes.length > maxEntries) {
             let removedLine = snippetConsole.removeChild(snippetConsole.firstChild);
             let objectIds = [...removedLine.querySelectorAll(".console-value-unprocessed[data-id]")].map(o => o.dataset.id);
-            removeCachedObjects(frameWindow, ...objectIds);
+            removeCachedObjects(...objectIds);
         }
 
         snippetConsole.lastElementChild.scrollIntoView(false);
@@ -340,6 +340,7 @@
 
         switch (data.command) {
             case "console-log":
+                console.log(data.args);
                 createLogEntry(...data.args);
                 break;
             case "process-object-properties":
@@ -350,15 +351,15 @@
 
     window.addEventListener("message", messageEventHandler);
 
-    function getSnippetInfo(frameWindow, objectId, proxy) {
-        frameWindow.postMessage(JSON.stringify({
+    function getSnippetInfo(objectId, proxy) {
+        demoFrame.contentWindow.postMessage(JSON.stringify({
             command: "get-object-properties",
             args: [objectId, proxy]
         }), "*");
     }
 
-    function removeCachedObjects(frameWindow, ...objectIds) {        
-        frameWindow.postMessage(JSON.stringify({
+    function removeCachedObjects(...objectIds) {        
+        demoFrame.contentWindow.postMessage(JSON.stringify({
             command: "remove-cached-objects",
             args: objectIds
         }), "*");
@@ -385,8 +386,7 @@
         if (!target || !target.dataset.id) return;
 
         if (target.classList.contains("console-value-unprocessed")) {
-            let frameWindow = document.querySelector("iframe").contentWindow;
-            getSnippetInfo(frameWindow, target.dataset.id, target.dataset.proxy === "true");
+            getSnippetInfo(target.dataset.id, target.dataset.proxy === "true");
             target.classList.add("console-value-expanding");
         } else if (target.classList.contains("console-value-expanded")) {
             target.classList.remove("console-value-expanded");

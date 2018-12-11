@@ -167,7 +167,7 @@
     console.log = function SnippetProxyLog(...args) {
         _broadcast({
             command: "console-log",
-            args: args.map(mapValue)
+            args: args.map(arg => mapValue(arg))
         });
         _log(...args);
     };

@@ -1,9 +1,9 @@
 "use strict";
 
 const port = process.env.PORT || 80;
-const express = require('express');
+const express = require("express");
 const expressHandlebars = require("express-handlebars");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const app = express();
 
 app.engine("handlebars", expressHandlebars());
