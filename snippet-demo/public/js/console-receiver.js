@@ -1,10 +1,12 @@
 ﻿(() => {
 
-    const maxEntries = 25;
+    const _messagePrefix = "SNIPPETCONSOLE:";
 
-    const snippetConsole = document.querySelector(".snippet-console");
+    const _maxEntries = 25;
 
-    const demoFrame = document.querySelector("iframe");
+    const _snippetConsole = document.querySelector(".snippet-console");
+
+    const _demoFrame = document.querySelector("iframe");
 
     function hydrate(...values) {
 
@@ -291,15 +293,13 @@
             });
         }
 
-        snippetConsole.appendChild(hydrate(argStub));
+        clearEntries(_maxEntries);
 
-        while (snippetConsole.childNodes.length > maxEntries) {
-            let removedLine = snippetConsole.removeChild(snippetConsole.firstChild);
-            let objectIds = [...removedLine.querySelectorAll(".console-value-unprocessed[data-id]")].map(o => o.dataset.id);
-            removeCachedObjects(...objectIds);
-        }
+        let entry = _snippetConsole.appendChild(hydrate(argStub));        
 
-        snippetConsole.lastElementChild.scrollIntoView(false);
+        _snippetConsole.lastElementChild.scrollIntoView(false);
+
+        return entry;
     }
 
     function processObjectProperties(objectId, properties) {
@@ -334,13 +334,39 @@
         }
     }
 
+    function clearEntries(keepN) {
+        let removedLine;
+        let objectIds;
+        while (_snippetConsole.childNodes.length > keepN) {
+            removedLine = _snippetConsole.removeChild(_snippetConsole.firstChild);
+            objectIds = [...removedLine.querySelectorAll(".console-value-unprocessed[data-id]")].map(o => o.dataset.id);
+            removeCachedObjects(...objectIds);
+        }
+    }
+
     function messageEventHandler(e) {
 
-        let data = JSON.parse(e.data);
+        if (!e.data || !e.data.startsWith(_messagePrefix)) return;
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+
+        let data = JSON.parse(e.data.slice(_messagePrefix.length));
 
         switch (data.command) {
+            case "console-clear":
+                clearEntries(0);
+                break;
+            case "console-error":
+                createLogEntry(...data.args).classList.add("console-line-error");
+                break;
+            case "console-warn":
+                createLogEntry(...data.args).classList.add("console-line-warn");
+                break;
             case "console-log":
-                console.log(data.args);
+            case "console-dir":
+            case "console-info":
                 createLogEntry(...data.args);
                 break;
             case "process-object-properties":
@@ -351,18 +377,22 @@
 
     window.addEventListener("message", messageEventHandler);
 
+    function _broadcast(obj) {
+        _demoFrame.contentWindow.postMessage(`${_messagePrefix}${JSON.stringify(obj)}`, "*");
+    }
+
     function getSnippetInfo(objectId, proxy) {
-        demoFrame.contentWindow.postMessage(JSON.stringify({
+        _broadcast(({
             command: "get-object-properties",
             args: [objectId, proxy]
-        }), "*");
+        }));
     }
 
     function removeCachedObjects(...objectIds) {        
-        demoFrame.contentWindow.postMessage(JSON.stringify({
+        _broadcast(({
             command: "remove-cached-objects",
             args: objectIds
-        }), "*");
+        }));
     }
 
     document.addEventListener("click", function (e) {

@@ -2,6 +2,8 @@
 
     document.head.removeChild(document.scripts[0]); // get rid of this script element so other scripts don't see it
 
+    const _messagePrefix = "SNIPPETCONSOLE:";
+
     const _rxNumeric = /^[0-9]+$/;
 
     const _cache = {};
@@ -13,6 +15,20 @@
     const _log = console.log.bind(_console);
 
     const _dir = console.dir.bind(_console);
+
+    const _info = console.info.bind(_console);
+
+    const _warn = console.warn.bind(_console);
+
+    const _error = console.error.bind(_console);
+
+    const _clear = console.clear.bind(_console);
+
+    const _time = console.time.bind(_console);
+
+    const _timeEnd = console.timeEnd.bind(_console);
+
+    const _timeKeeper = {};
 
     const _postMessage = _parent.postMessage.bind(_parent);
 
@@ -149,19 +165,30 @@
         }
 
         if (!(object instanceof Array) && !("length" in object) && object[Symbol.iterator]) {
-            try {
-                yield Object.assign(mapValue((() => [...object]), true), {
-                    proxy: true,
-                    name: "[[Entries]]"
-                });
-            } catch (err) {
-                // :(
+            if (object instanceof Map) {
+                try {
+                    yield Object.assign(mapValue((() => [...object].map(a => ({ key: a[0], value: a[1] }))), true), {
+                        proxy: true,
+                        name: "[[Entries]]"
+                    });
+                } catch (err) {
+                    // :(
+                }
+            } else {
+                try {
+                    yield Object.assign(mapValue((() => [...object]), true), {
+                        proxy: true,
+                        name: "[[Entries]]"
+                    });
+                } catch (err) {
+                    // :(
+                }
             }
         }
     }
 
     function _broadcast(obj) {
-        _postMessage(JSON.stringify(obj), "*");
+        _postMessage(`${_messagePrefix}${JSON.stringify(obj)}`, "*");
     }
 
     console.log = function SnippetProxyLog(...args) {
@@ -172,17 +199,84 @@
         _log(...args);
     };
 
-    console.dir = function SnippetProxyLog(arg) {
+    console.dir = function SnippetProxyDir(arg) {
         _broadcast({
-            command: "console-log",
+            command: "console-dir",
             args: [mapValue(arg)]
         });
         _dir(arg);
     };
 
+    console.info = function SnippetProxyInfo(arg) {
+        _broadcast({
+            command: "console-info",
+            args: [mapValue(arg)]
+        });
+        _dir(arg);
+    };
+
+    console.warn = function SnippetProxyWarn(arg) {
+        _broadcast({
+            command: "console-warn",
+            args: [mapValue(arg)]
+        });
+        _warn(arg);
+    };
+
+    console.error = function SnippetProxyError(arg) {
+        _broadcast({
+            command: "console-error",
+            args: [mapValue(arg)]
+        });
+        _error(arg);
+    };
+
+    console.clear = function SnippetProxyClear() {
+        _broadcast({
+            command: "console-clear"
+        });
+        _clear();
+    };
+
+    console.time = function SnippetProxyTime(label) {
+        const now = performance.now();
+        _time(label);
+        if (label === undefined) {
+            label = "default";
+        }
+        _timeKeeper[label] = now;
+    };
+
+    console.timeEnd = function SnippetProxyTimeEnd(label) {
+        const now = performance.now();
+        _timeEnd(label);
+        if (label === undefined) {
+            label = "default";
+        }
+        if (label in _timeKeeper) {
+            let diff = now - _timeKeeper[label];
+            delete _timeKeeper[label];
+            _broadcast({
+                command: "console-log",
+                args: [mapValue(`${label}: ${diff}ms`)]
+            });
+        } else {
+            _broadcast({
+                command: "console-warn",
+                args: [mapValue(`Timer '${label}' does not exist`)]
+            });
+        }
+    };
+
     function messageEventHandler(e) {
 
-        let data = JSON.parse(e.data);
+        if (!e.data || !e.data.startsWith(_messagePrefix)) return;
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+
+        let data = JSON.parse(e.data.slice(_messagePrefix.length));
 
         switch (data.command) {
             case "remove-cached-objects":
@@ -209,5 +303,31 @@
     }
 
     window.addEventListener("message", messageEventHandler);
+
+    function errorEventHandler(e) {
+        if (e.error) {
+            let error = e.error;
+            let errorString = `${error.name}: ${error.message}`;
+            let stack = error.stack;
+            if (stack) {
+                if (stack.indexOf(errorString) === 0) {
+                    errorString = stack;
+                } else {
+                    errorString += "\n" + stack;
+                }
+            }
+            _broadcast({
+                command: "console-error",
+                args: [mapValue(`Uncaught ${errorString}`)]
+            });
+        } else {
+            _broadcast({
+                command: "console-error",
+                args: [mapValue("Uncaught %o"), mapValue(e)]
+            });
+        }
+    }
+
+    window.addEventListener("error", errorEventHandler);
 
 })();
