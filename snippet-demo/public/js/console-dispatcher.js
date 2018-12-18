@@ -299,16 +299,16 @@
         _assert(condition, ...data);
     };
 
-    console.group = function SnippetProxyGroup(groupName) {
-        _group(groupName);
+    console.group = function SnippetProxyGroup(...args) {
+        _group(...args);
         _broadcast({
             command: "console-group",
-            args: [groupName]
+            args: args.map(a => mapValue(a))
         });
     };
 
-    console.groupCollapsed = function SnippetProxyGroupCollapsed(groupName) {
-        _groupCollapsed(groupName);
+    console.groupCollapsed = function SnippetProxyGroupCollapsed(...args) {
+        _groupCollapsed(...args);
         _broadcast({
             command: "console-group-collapsed",
             args: [groupName]

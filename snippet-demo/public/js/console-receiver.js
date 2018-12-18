@@ -274,6 +274,18 @@
         return message;
     }
 
+    function createSoloLogEntry(...args) {
+
+        let entry = createLogEntry(...args);
+
+        clearEntries(_maxEntries);
+
+        _consoleContentTarget.lastElementChild.scrollIntoView(false);
+
+        return entry;
+
+    }
+
     function createLogEntry(...args) {
 
         let argStub = {
@@ -299,14 +311,8 @@
                 contentNode.childNodes.push(domify(arg));
             });
         }
-
-        clearEntries(_maxEntries);
-
-        let entry = _consoleContentTarget.appendChild(hydrate(argStub));        
-
-        _consoleContentTarget.lastElementChild.scrollIntoView(false);
-
-        return entry;
+        
+        return _consoleContentTarget.appendChild(hydrate(argStub));        
     }
 
     function processObjectProperties(objectId, properties) {
@@ -354,7 +360,7 @@
         }
     }
 
-    function createConsoleGroup(groupName) {
+    function createConsoleGroup(...args) {
 
         let depth = 1;
 
@@ -365,6 +371,10 @@
             group = group.parentNode;
         }
 
+        let entry = createLogEntry(...args);
+
+        entry.classList.add("console-line-group");
+
         _consoleContentTarget = _consoleContentTarget.appendChild(hydrate({
             tagName: "div",
             className: "console-group",
@@ -372,22 +382,7 @@
                 "--depth": depth
             },
             childNodes: [
-                {
-                    tagName: "div",
-                    className: "console-line console-line-group",
-                    childNodes: [
-
-                        {
-                            tagName: "div",
-                            className: "console-line-header"
-                        },
-                        {
-                            tagName: "div",
-                            className: "console-line-content",
-                            textContent: groupName == null ? "console.group" : groupName
-                        }
-                    ]
-                }
+                entry
             ]
         }));
 
@@ -416,10 +411,10 @@
 
         switch (data.command) {
             case "console-group":
-                createConsoleGroup(data.args[0]);
+                createConsoleGroup(...data.args);
                 break;
             case "console-group-collapsed":
-                createConsoleGroup(data.args[0]).classList.add("console-group-collapsed");
+                createConsoleGroup(...data.args).classList.add("console-group-collapsed");
                 break;
             case "console-group-end":
                 groupEnd();
@@ -428,15 +423,15 @@
                 clearEntries(0);
                 break;
             case "console-error":
-                createLogEntry(...data.args).classList.add("console-line-error");
+                createSoloLogEntry(...data.args).classList.add("console-line-error");
                 break;
             case "console-warn":
-                createLogEntry(...data.args).classList.add("console-line-warn");
+                createSoloLogEntry(...data.args).classList.add("console-line-warn");
                 break;
             case "console-log":
             case "console-dir":
             case "console-info":
-                createLogEntry(...data.args);
+                createSoloLogEntry(...data.args);
                 break;
             case "process-object-properties":
                 processObjectProperties(...data.args);
@@ -465,8 +460,11 @@
     }
 
     document.addEventListener("click", function (e) {
+
+        if (!e.target.matches(".console-line-group, .console-line-group > .console-line-header, .console-line-group > .console-line-content")) return;
+
         let target = e.target.closest(".console-line-group");
-        if (target === null) return;
+
         if (target.parentNode.classList.contains("console-group-collapsed")) {
             target.parentNode.classList.remove("console-group-collapsed");
         } else {
