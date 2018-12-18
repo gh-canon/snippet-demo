@@ -428,7 +428,7 @@
                 groupEnd();
                 break;
             case "console-clear":
-                clearEntries(0);
+                clearEntries(1);
                 break;
             case "console-error":
                 createSoloLogEntry(...data.args).classList.add("console-line-error");
