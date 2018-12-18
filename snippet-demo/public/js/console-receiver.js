@@ -10,8 +10,6 @@
 
     let _consoleContentTarget = _snippetConsole;
 
-    let _groupNesting = 0;
-
     function hydrate(...values) {
 
         let frag = document.createDocumentFragment();
@@ -346,19 +344,32 @@
     function clearEntries(keepN) {
         let removedLine;
         let objectIds;
-        while (_consoleContentTarget.childNodes.length > keepN) {
-            removedLine = _consoleContentTarget.removeChild(_consoleContentTarget.firstChild);
+        while (_snippetConsole.childNodes.length > keepN) {
+            removedLine = _snippetConsole.removeChild(_snippetConsole.firstChild);
             objectIds = [...removedLine.querySelectorAll(".console-value-unprocessed[data-id]")].map(o => o.dataset.id);
             removeCachedObjects(...objectIds);
+        }
+        if (!_consoleContentTarget.closest(".snippet-console")) {
+            _consoleContentTarget = _snippetConsole;
         }
     }
 
     function createConsoleGroup(groupName) {
-        return _consoleContentTarget = _consoleContentTarget.appendChild(hydrate({
+
+        let depth = 1;
+
+        let group = _consoleContentTarget;
+
+        while (group.classList.contains("console-group")) {
+            depth++;
+            group = group.parentNode;
+        }
+
+        _consoleContentTarget = _consoleContentTarget.appendChild(hydrate({
             tagName: "div",
             className: "console-group",
             style: {
-                "--depth": ++_groupNesting
+                "--depth": depth
             },
             childNodes: [
                 {
@@ -379,12 +390,17 @@
                 }
             ]
         }));
+
+        clearEntries(_maxEntries);
+
+        _consoleContentTarget.lastElementChild.scrollIntoView(false);
+
+        return _consoleContentTarget;
     }
 
     function groupEnd() {
         if (_consoleContentTarget !== _snippetConsole) {
             _consoleContentTarget = _consoleContentTarget.parentNode;
-            _groupNesting--;
         }
     }
 

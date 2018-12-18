@@ -43,7 +43,6 @@ iframe {
     padding: 4px 6px;
     animation: console-line-flash 500ms forwards;
     background-color: rgba(255,255,0,.25);    
-    white-space: pre-wrap;
 }
 .console-line-error {
     color: #ff8080;
@@ -60,7 +59,10 @@ iframe {
     position: relative;
     z-index: 1;
 }
-.console-value[data-id]{
+.console-line-content{
+    white-space: pre-wrap;
+}
+.console-value[data-id] {
     cursor: default;
 }
 .editor-tile{
@@ -80,7 +82,7 @@ dl {
 dt,dd{
     display: inline;
     margin: 0;
-    padding: 0;
+    padding: 0;    
 }
 dt {
     color: #d267da;
@@ -95,20 +97,24 @@ dt[data-enumerable="false"]:not([data-proxy="true"]) {
 .console-value[data-type="null"]{
     color: #7f7f7f;
 }
+
 .console-property-collapsed::before,
 .console-property-expanded::before,
 .console-value-collapsed > .console-value-label::before,
 .console-value-expanded > .console-value-label::before {
-    content: '';
+    content: "";
     display: inline-block;
-    width: 4px;
-    height: 4px;
-    box-sizing: border-box;
-    border: 4px solid transparent;
-    border-left-color: #8d8d8d;
-    border-right: none;
-    transform: translateY(.5px) scaleX(1.5);
-    margin: 0 4px 1px 2px;
+    height: 10px;
+    width: 10px;
+    background-image: url('/css/img/console-icons.svg');
+    background-size: 10px 70px;
+    background-position: 0px -30px;
+    background-repeat: no-repeat;
+    white-space: normal;
+}
+.console-property-collapsed::before,
+.console-value-collapsed > .console-value-label::before {
+    background-position: 0px -20px;
 }
 .console-property-collapsed,
 .console-property-expanded {
@@ -122,13 +128,10 @@ dd > .console-value > .console-value-label::before {
 .console-property-collapsed::before {
     position: absolute;
     margin: 0;
-    top: 2px;
-    left: -9px;
+    top: 0px;
+    left: -10px;
 }
-.console-property-expanded::before,
-.console-value-expanded > .console-value-label::before {
-    transform: translateY(.5px) rotate(90deg) scaleX(1.5);
-}
+
 .console-value[data-type="string"],
 .console-value[data-type="symbol"],
 .console-value[data-sub-type="RegExp"] > .console-value-label {

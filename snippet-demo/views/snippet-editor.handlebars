@@ -30,19 +30,21 @@
 
   values.push(values);
 
-  console.groupCollapsed("group 1");  
+  console.time("sample timer");
+
+  console.group("group 1");  
 
   console.group("group 2");  
 
   console.log("array with circular reference: %o", values);
 
-  console.time("foo");
-
-  setTimeout(() => console.timeEnd("foo"), 1500);
+  setTimeout(() => {
+   console.groupEnd();
+   console.timeEnd("sample timer");
+   console.groupEnd();
+  }, 15);
 
   document.addEventListener("wheel", e => console.log(e));
-
-  console.groupEnd();
 
   throw new Error("sample error");
 
