@@ -350,8 +350,8 @@
     function clearEntries(keepN) {
         let removedLine;
         let objectIds;
-        while (_snippetConsole.childNodes.length > keepN) {
-            removedLine = _snippetConsole.removeChild(_snippetConsole.firstChild);
+        while (_snippetConsole.children.length > keepN) {
+            removedLine = _snippetConsole.removeChild(_snippetConsole.firstElementChild);
             objectIds = [...removedLine.querySelectorAll(".console-value-unprocessed[data-id]")].map(o => o.dataset.id);
             removeCachedObjects(...objectIds);
         }
