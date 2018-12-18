@@ -64,6 +64,8 @@ iframe {
 .console-line-input {
     border-bottom: none;
     flex-grow: 1;
+    animation: none;
+    background-color: #333;
 }
 .console-line-content[contenteditable] {
     background: transparent;
@@ -74,7 +76,7 @@ iframe {
     height: 100%;
     resize: none;
     outline: none;  
-    white-space: pre-wrap;
+    white-space: pre-wrap;    
 }
 .console-line-content {
     white-space: pre-wrap;
