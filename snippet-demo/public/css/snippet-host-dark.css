@@ -67,16 +67,17 @@ iframe {
     animation: none;
     background-color: #333;
 }
-.console-line-content[contenteditable] {
+textarea.console-line-content {
     background: transparent;
     border: none;
-    color: rgb(213, 213, 213);
-    margin: -1px 0 0 0;
+    color: rgb(213, 213, 213);    
     min-height: 2.5em;
     height: 100%;
     resize: none;
     outline: none;  
     white-space: pre-wrap;    
+    box-sizing: border-box;   
+    padding: 0;
 }
 .console-line-content {
     white-space: pre-wrap;
@@ -130,6 +131,7 @@ dt[data-enumerable="false"]:not([data-proxy="true"]) {
     background-position: 0px -30px;
     background-repeat: no-repeat;
     white-space: normal;
+    transform: translateY(1px);
 }
 .console-property-collapsed::before,
 .console-value-collapsed > .console-value-label::before {
@@ -147,7 +149,7 @@ dd > .console-value > .console-value-label::before {
 .console-property-collapsed::before {
     position: absolute;
     margin: 0;
-    top: 0px;
+    top: 1px;
     left: -10px;
 }
 
@@ -218,7 +220,7 @@ dl .console-value-collapsed[data-type="object"]:not([data-sub-type="RegExp"]):no
     display: block;
     height: 10px;
     width: 10px;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .console-line-error .console-line-header::before {

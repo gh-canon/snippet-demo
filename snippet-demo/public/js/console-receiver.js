@@ -534,8 +534,10 @@
     });
 
     _consoleInput.addEventListener("input", function (e) {
-        if (e.target.children.length) {
-            e.target.textContent = e.target.textContent;
+        let textarea = e.target;
+        textarea.style.height = "100%";
+        if (textarea.clientHeight < textarea.scrollHeight) {
+            textarea.style.height = textarea.scrollHeight + "px";
         }
     });    
 
@@ -544,14 +546,16 @@
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        let text = e.target.textContent;
+        let textarea = e.target;
+        let text = textarea.value;
         let entry = createSoloLogEntry({ type: "string", value: text });
         entry.classList.add("console-line-echo");
         _broadcast(({
             command: "eval",
             args: text
         }));       
-        e.target.textContent = "";
+        textarea.value = "";
+        textarea.style.height = "100%";
     });  
 
     let form = document.forms[0];
