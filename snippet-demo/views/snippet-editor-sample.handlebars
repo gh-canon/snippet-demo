@@ -11,8 +11,10 @@
         <label for="html">html</label>
         <label for="js">js</label>
         <label for="css">css</label>
-        <textarea id="html" name="html"></textarea>
-        <textarea id="js" name="js">(() => {
+        <textarea id="html" name="html">&lt;h1&gt;Sample Title&lt;/h1&gt;
+&lt;p&gt;Sample lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;
+&lt;img src="http://lorempixel.com/400/200/" alt="lorem pixel" &gt;</textarea>
+        <textarea id="js" name="js">(() =&gt; {
 
   let values = [
     "test",
@@ -38,18 +40,30 @@
 
   console.log("array with circular reference: %o", values);
 
-  setTimeout(() => {
+  setTimeout(() =&gt; {
    console.groupEnd();
    console.timeEnd("sample timer");
    console.groupEnd();
+   console.log(document.body);
   }, 15);
 
-  document.addEventListener("wheel", e => console.log(e));
+  document.addEventListener("wheel", e =&gt; console.log(e));
 
   throw new Error("sample error");
 
 })();</textarea>
-        <textarea id="css" name="css"></textarea>
+        <textarea id="css" name="css">html {
+ margin: 0;
+ padding: 0;
+}
+body {
+ font-family: sans-serif;
+ font-size: 10pt;
+ color: #d5d5d5;
+ background-color: #111;
+ padding: 30px;
+ margin: 0;
+}</textarea>
         <iframe class="output-frame" id="snippet-host-frame" name="snippet-host-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts"></iframe>
     </form>
     <script src="/js/snippet-editor.js"></script>

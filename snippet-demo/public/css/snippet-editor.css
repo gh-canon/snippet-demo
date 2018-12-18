@@ -35,7 +35,7 @@ textarea {
     font-size: 10pt;
     color: #fff;
     resize: none;    
-    white-space: pre;
+    white-space: pre-wrap;
 }
 iframe {
     display: grid;
