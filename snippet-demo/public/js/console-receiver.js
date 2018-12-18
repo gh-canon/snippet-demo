@@ -8,6 +8,8 @@
 
     const _demoFrame = document.querySelector("iframe");
 
+    const _consoleInput = document.getElementById("console-input");
+
     let _consoleContentTarget = _snippetConsole;
 
     function hydrate(...values) {
@@ -278,9 +280,7 @@
 
         let entry = createLogEntry(...args);
 
-        clearEntries(_maxEntries);
-
-        _consoleContentTarget.lastElementChild.scrollIntoView(false);
+        appendEntry(entry);
 
         return entry;
 
@@ -312,7 +312,7 @@
             });
         }
         
-        return _consoleContentTarget.appendChild(hydrate(argStub));        
+        return hydrate(argStub);        
     }
 
     function processObjectProperties(objectId, properties) {
@@ -360,6 +360,16 @@
         }
     }
 
+    function appendEntry(entry) {
+        if (_consoleContentTarget === _snippetConsole) {
+            _snippetConsole.insertBefore(entry, _snippetConsole.lastElementChild);
+        } else {
+            _consoleContentTarget.appendChild(entry);
+        }
+        clearEntries(_maxEntries);
+        _snippetConsole.lastElementChild.scrollIntoView(false);
+    }
+
     function createConsoleGroup(...args) {
 
         let depth = 1;
@@ -370,25 +380,23 @@
             depth++;
             group = group.parentNode;
         }
-
-        let entry = createLogEntry(...args);
-
-        entry.classList.add("console-line-group");
-
-        _consoleContentTarget = _consoleContentTarget.appendChild(hydrate({
+        
+        let entry = hydrate({
             tagName: "div",
             className: "console-group",
             style: {
                 "--depth": depth
             },
             childNodes: [
-                entry
+                createLogEntry(...args)
             ]
-        }));
+        });
 
-        clearEntries(_maxEntries);
+        entry.children[0].classList.add("console-line-group");
 
-        _consoleContentTarget.lastElementChild.scrollIntoView(false);
+        appendEntry(entry);
+
+        _consoleContentTarget = entry;
 
         return _consoleContentTarget;
     }
@@ -432,6 +440,9 @@
             case "console-dir":
             case "console-info":
                 createSoloLogEntry(...data.args);
+                break;
+            case "eval-result":
+                createSoloLogEntry(data.args).classList.add("console-line-return");
                 break;
             case "process-object-properties":
                 processObjectProperties(...data.args);
@@ -520,6 +531,27 @@
         }
 
     });
+
+    _consoleInput.addEventListener("input", function (e) {
+        if (e.children) {
+            e.target.textContent = e.target.textContent;
+        }
+    });    
+
+    _consoleInput.addEventListener("keydown", function (e) {
+        if (e.which !== 13 || e.shiftKey) return;
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        let text = e.target.textContent;
+        let entry = createSoloLogEntry({ type: "string", value: text });
+        entry.classList.add("console-line-echo");
+        _broadcast(({
+            command: "eval",
+            args: text
+        }));       
+        e.target.textContent = "";
+    });  
 
     let form = document.forms[0];
     form.submit();    

@@ -322,6 +322,19 @@
         });
     };
 
+    function processEval(evalText) {
+        let evalResponse;
+        try {
+            evalResponse = eval(evalText);
+            _broadcast({
+                command: "eval-result",
+                args: mapValue(evalResponse)
+            });
+        } catch (err) {
+            broadcastError(err);
+        }
+    }
+
     function messageEventHandler(e) {
 
         if (!e.data || !e.data.startsWith(_messagePrefix)) return;
@@ -333,6 +346,9 @@
         let data = JSON.parse(e.data.slice(_messagePrefix.length));
 
         switch (data.command) {
+            case "eval":
+                processEval(data.args);
+                break;
             case "remove-cached-objects":
                 for (let objectId of data.args) {
                     delete _cache[objectId];
@@ -358,22 +374,25 @@
 
     window.addEventListener("message", messageEventHandler);
 
+    function broadcastError(error) {
+        let errorString = `${error.name}: ${error.message}`;
+        let stack = error.stack;
+        if (stack) {
+            if (stack.indexOf(errorString) === 0) {
+                errorString = stack;
+            } else {
+                errorString += "\n" + stack;
+            }
+        }
+        _broadcast({
+            command: "console-error",
+            args: [mapValue(`Uncaught ${errorString}`)]
+        });
+    }
+
     function errorEventHandler(e) {
         if (e.error) {
-            let error = e.error;
-            let errorString = `${error.name}: ${error.message}`;
-            let stack = error.stack;
-            if (stack) {
-                if (stack.indexOf(errorString) === 0) {
-                    errorString = stack;
-                } else {
-                    errorString += "\n" + stack;
-                }
-            }
-            _broadcast({
-                command: "console-error",
-                args: [mapValue(`Uncaught ${errorString}`)]
-            });
+            broadcastError(e.error);
         } else {
             _broadcast({
                 command: "console-error",
