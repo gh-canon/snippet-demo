@@ -40,6 +40,7 @@
     </Compile>
     <Compile Include="server.js" />
     <Content Include="package.json" />
+    <Content Include="public\css\img\console-icons.svg" />
     <Content Include="public\css\snippet-editor.css">
       <SubType>Code</SubType>
     </Content>
@@ -55,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\css\" />
+    <Folder Include="public\css\img\" />
     <Folder Include="views\" />
     <Folder Include="public\" />
     <Folder Include="public\js\" />

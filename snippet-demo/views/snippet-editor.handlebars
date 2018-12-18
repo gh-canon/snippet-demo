@@ -30,6 +30,10 @@
 
   values.push(values);
 
+  console.groupCollapsed("group 1");  
+
+  console.group("group 2");  
+
   console.log("array with circular reference: %o", values);
 
   console.time("foo");
@@ -37,6 +41,8 @@
   setTimeout(() => console.timeEnd("foo"), 1500);
 
   document.addEventListener("wheel", e => console.log(e));
+
+  console.groupEnd();
 
   throw new Error("sample error");
 

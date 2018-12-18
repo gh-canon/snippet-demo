@@ -33,6 +33,7 @@ iframe {
 .snippet-console {
     font-family: 'Ubuntu Mono', monospace;
     line-height: 12pt;
+    cursor: default;
 }
 .console-line {
     border-top: 1px solid #4e4e4e;
@@ -182,6 +183,82 @@ dl .console-value-collapsed[data-type="object"]:not([data-sub-type="RegExp"]):no
     display: none;
 }
 
+.console-line {
+  display: grid;
+  grid-template-columns: 10px auto;
+  grid-gap: 6px;
+}
+
+.console-line-header::before {
+    background-image: url('/css/img/console-icons.svg');
+    background-size: 10px 70px;
+    background-repeat: no-repeat;
+    display: block;
+    height: 10px;
+    width: 10px;
+    margin-top: 2px;
+}
+
+.console-line-error .console-line-header::before {
+    content: "";
+}
+
+.console-line-warn .console-line-header::before {
+    content: "";
+    background-position: 0px -10px;
+}
+.console-line-return .console-line-header::before {
+    content: "";
+    background-position: 0px -40px;
+}
+.console-line-echo .console-line-header::before {
+    content: "";
+    background-position: 0px -50px;
+}
+.console-line-input .console-line-header::before {
+    content: "";
+    background-position: 0px -60px;
+}
+.console-line-group {
+    font-weight: bold;
+}
+.console-line-group > .console-line-header::before {
+    content: "";
+    background-position: 0px -30px;
+}
+.console-group .console-group > .console-line-group {
+    padding-left: calc(var(--depth) * 10px);
+}
+.console-group > .console-line:nth-of-type(n+2){
+    padding-left: calc(var(--depth) * 11.5px + 6px);
+}
+.console-group{
+    position: relative;
+}
+.console-group::before {
+    content: "";
+    display: block;
+    width: 4px;
+    position: absolute;
+    top: 26px;
+    left: 10.5px;    
+    bottom: 1px;
+    border-left: 1px solid #5a5a5a;
+    border-bottom: 1px solid #5a5a5a;
+    z-index: 3;
+}
+.console-group .console-group::before {
+    left: calc(11.5px * var(--depth));
+}
+.console-group-collapsed > .console-line-group > .console-line-header::before {
+    background-position: 0 -20px;
+}
+.console-group-collapsed > :not(.console-line-group) {
+    display: none;
+}
+.console-group-collapsed::before {
+    display: none;
+}
 @keyframes console-line-flash {
     0% {
         background-color: rgba(255,255,0, .25);

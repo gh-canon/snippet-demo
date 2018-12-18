@@ -28,6 +28,14 @@
 
     const _timeEnd = console.timeEnd.bind(_console);
 
+    const _assert = console.assert.bind(_console);
+
+    const _group = console.group.bind(_console);
+
+    const _groupCollapsed = console.groupCollapsed.bind(_console);
+
+    const _groupEnd = console.groupEnd.bind(_console);
+
     const _timeKeeper = {};
 
     const _postMessage = _parent.postMessage.bind(_parent);
@@ -266,6 +274,52 @@
                 args: [mapValue(`Timer '${label}' does not exist`)]
             });
         }
+    };
+
+    console.assert = function SnippetProxyAssert(condition, ...data) {
+        if (!condition) {
+            if (data.length) {
+                _broadcast({
+                    command: "console-error",
+                    args: [mapValue("Assertion failed: " + data.map(d => {
+                        if (typeof d === "string" || d instanceof Date) {
+                            return "%s";
+                        } else {
+                            return "%o";
+                        }
+                    }).join(" ")), ...data.map(d => mapValue(d))]
+                });
+            } else {
+                _broadcast({
+                    command: "console-error",
+                    args: [mapValue("Assertion failed: %s"), mapValue("console.assert")]
+                });
+            }
+        }
+        _assert(condition, ...data);
+    };
+
+    console.group = function SnippetProxyGroup(groupName) {
+        _group(groupName);
+        _broadcast({
+            command: "console-group",
+            args: [groupName]
+        });
+    };
+
+    console.groupCollapsed = function SnippetProxyGroupCollapsed(groupName) {
+        _groupCollapsed(groupName);
+        _broadcast({
+            command: "console-group-collapsed",
+            args: [groupName]
+        });
+    };
+
+    console.groupEnd = function SnippetProxyGroupEnd() {
+        _groupEnd();
+        _broadcast({
+            command: "console-group-end"
+        });
     };
 
     function messageEventHandler(e) {

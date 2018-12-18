@@ -4,9 +4,13 @@
 
     const _maxEntries = 25;
 
-    const _snippetConsole = document.querySelector(".snippet-console");
+    const _snippetConsole = document.querySelector(".snippet-console");    
 
     const _demoFrame = document.querySelector("iframe");
+
+    let _consoleContentTarget = _snippetConsole;
+
+    let _groupNesting = 0;
 
     function hydrate(...values) {
 
@@ -56,7 +60,7 @@
 
                         if (value.style) {
                             for (let prop in value.style) {
-                                node.style[prop] = value.style[prop];
+                                node.style.setProperty(prop, value.style[prop]);
                             }
                         }
 
@@ -277,27 +281,32 @@
         let argStub = {
             tagName: "div",
             className: "console-line",
-            childNodes: []
+            childNodes: [
+                { tagName: "div", className: "console-line-header" },
+                { tagName: "div", className: "console-line-content", childNodes: [] }
+            ]
         };
 
+        let contentNode = argStub.childNodes[1];
+
         if (args[0].type === "string" && args.length === 1) {
-            argStub.textContent = args[0].value;
+            contentNode.textContent = args[0].value;
         } else if (args[0].type === "string" && args.length > 1 && /((^|[^%])%[sdifoO])/.test(args[0].value)) {
-            argStub.childNodes.push(format(args[0].value, ...args.slice(1)));
+            contentNode.childNodes.push(format(args[0].value, ...args.slice(1)));
         } else {
             args.forEach((arg, i) => {
                 if (i > 0) {
-                    argStub.childNodes.push(document.createTextNode(" "));
+                    contentNode.childNodes.push(document.createTextNode(" "));
                 }
-                argStub.childNodes.push(domify(arg));
+                contentNode.childNodes.push(domify(arg));
             });
         }
 
         clearEntries(_maxEntries);
 
-        let entry = _snippetConsole.appendChild(hydrate(argStub));        
+        let entry = _consoleContentTarget.appendChild(hydrate(argStub));        
 
-        _snippetConsole.lastElementChild.scrollIntoView(false);
+        _consoleContentTarget.lastElementChild.scrollIntoView(false);
 
         return entry;
     }
@@ -337,10 +346,45 @@
     function clearEntries(keepN) {
         let removedLine;
         let objectIds;
-        while (_snippetConsole.childNodes.length > keepN) {
-            removedLine = _snippetConsole.removeChild(_snippetConsole.firstChild);
+        while (_consoleContentTarget.childNodes.length > keepN) {
+            removedLine = _consoleContentTarget.removeChild(_consoleContentTarget.firstChild);
             objectIds = [...removedLine.querySelectorAll(".console-value-unprocessed[data-id]")].map(o => o.dataset.id);
             removeCachedObjects(...objectIds);
+        }
+    }
+
+    function createConsoleGroup(groupName) {
+        return _consoleContentTarget = _consoleContentTarget.appendChild(hydrate({
+            tagName: "div",
+            className: "console-group",
+            style: {
+                "--depth": ++_groupNesting
+            },
+            childNodes: [
+                {
+                    tagName: "div",
+                    className: "console-line console-line-group",
+                    childNodes: [
+
+                        {
+                            tagName: "div",
+                            className: "console-line-header"
+                        },
+                        {
+                            tagName: "div",
+                            className: "console-line-content",
+                            textContent: groupName == null ? "console.group" : groupName
+                        }
+                    ]
+                }
+            ]
+        }));
+    }
+
+    function groupEnd() {
+        if (_consoleContentTarget !== _snippetConsole) {
+            _consoleContentTarget = _consoleContentTarget.parentNode;
+            _groupNesting--;
         }
     }
 
@@ -355,6 +399,15 @@
         let data = JSON.parse(e.data.slice(_messagePrefix.length));
 
         switch (data.command) {
+            case "console-group":
+                createConsoleGroup(data.args[0]);
+                break;
+            case "console-group-collapsed":
+                createConsoleGroup(data.args[0]).classList.add("console-group-collapsed");
+                break;
+            case "console-group-end":
+                groupEnd();
+                break;
             case "console-clear":
                 clearEntries(0);
                 break;
@@ -394,6 +447,16 @@
             args: objectIds
         }));
     }
+
+    document.addEventListener("click", function (e) {
+        let target = e.target.closest(".console-line-group");
+        if (target === null) return;
+        if (target.parentNode.classList.contains("console-group-collapsed")) {
+            target.parentNode.classList.remove("console-group-collapsed");
+        } else {
+            target.parentNode.classList.add("console-group-collapsed");
+        }
+    });
 
     document.addEventListener("click", function (e) {
 
