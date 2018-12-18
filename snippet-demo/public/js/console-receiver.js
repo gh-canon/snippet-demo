@@ -534,7 +534,7 @@
     });
 
     _consoleInput.addEventListener("input", function (e) {
-        if (e.children) {
+        if (e.target.children.length) {
             e.target.textContent = e.target.textContent;
         }
     });    
