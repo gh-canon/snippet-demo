@@ -68,6 +68,8 @@ iframe {
     background-color: #333;
 }
 textarea.console-line-content {
+    font-family: inherit;
+    font-size: inherit;
     background: transparent;
     border: none;
     color: rgb(213, 213, 213);    
