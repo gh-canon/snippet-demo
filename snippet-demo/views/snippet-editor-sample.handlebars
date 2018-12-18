@@ -12,7 +12,43 @@
         <label for="js">js</label>
         <label for="css">css</label>
         <textarea id="html" name="html"></textarea>
-        <textarea id="js" name="js"></textarea>
+        <textarea id="js" name="js">(() => {
+
+  let values = [
+    "test",
+    true,
+    1337,
+    Infinity,
+    NaN,
+    window,
+    /(?:)/,
+    Symbol("foo"),
+    new Map([["a",1],[window,1337]]),
+    new Set(["a","b","c","d"]),
+    new Date,
+  ];
+
+  values.push(values);
+
+  console.time("sample timer");
+
+  console.group("group 1");  
+
+  console.group("group 2");  
+
+  console.log("array with circular reference: %o", values);
+
+  setTimeout(() => {
+   console.groupEnd();
+   console.timeEnd("sample timer");
+   console.groupEnd();
+  }, 15);
+
+  document.addEventListener("wheel", e => console.log(e));
+
+  throw new Error("sample error");
+
+})();</textarea>
         <textarea id="css" name="css"></textarea>
         <iframe class="output-frame" id="snippet-host-frame" name="snippet-host-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts"></iframe>
     </form>

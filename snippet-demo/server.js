@@ -18,6 +18,14 @@ app.get("/", (req, res) => {
     res.render("snippet-editor");
 });
 
+app.get("/sample", (req, res) => {
+    res.render("snippet-editor-sample");
+});
+
+app.get("/snippet-host", (req, res) => {
+    res.render("snippet-host");
+});
+
 app.post("/snippet-host", (req, res) => {
     res.render("snippet-host", {
         html: Buffer.from(req.body.html || "").toString("base64"),

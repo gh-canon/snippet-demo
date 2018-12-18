@@ -46,6 +46,7 @@
     </Content>
     <Content Include="public\css\snippet-host-dark.css" />
     <Content Include="README.md" />
+    <Content Include="views\snippet-editor-sample.handlebars" />
     <Content Include="views\snippet-editor.handlebars">
       <SubType>Code</SubType>
     </Content>
