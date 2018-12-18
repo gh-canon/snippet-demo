@@ -13,7 +13,7 @@
         <label for="css">css</label>
         <textarea id="html" name="html">&lt;h1&gt;Sample Title&lt;/h1&gt;
 &lt;p&gt;Sample lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;
-&lt;img src="http://lorempixel.com/400/200/" alt="lorem pixel" &gt;</textarea>
+&lt;img src="http://lorempixel.com/400/200/" alt="lorem pixel"&gt;</textarea>
         <textarea id="js" name="js">(() =&gt; {
 
   let values = [
@@ -53,16 +53,35 @@
 
 })();</textarea>
         <textarea id="css" name="css">html {
- margin: 0;
- padding: 0;
+  margin: 0;
+  padding: 0;
 }
 body {
- font-family: sans-serif;
- font-size: 10pt;
- color: #d5d5d5;
- background-color: #111;
- padding: 30px;
- margin: 0;
+  box-sizing: border-box;
+  padding: 30px;
+  margin: 0;
+  min-height: 100vh;
+  font-family: sans-serif;
+  font-size: 11pt;
+  color: #d5d5d5;
+  background-color: #111;
+}
+body::before {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('http://lorempixel.com/400/200/');
+  background-size: cover;
+  filter: blur(10px);
+  opacity: .33;
+  z-index: -1;
+}
+p {
+  line-height: 1.5em;
 }</textarea>
         <iframe class="output-frame" id="snippet-host-frame" name="snippet-host-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts"></iframe>
     </form>
