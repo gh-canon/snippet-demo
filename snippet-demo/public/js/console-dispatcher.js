@@ -311,7 +311,7 @@
         _groupCollapsed(...args);
         _broadcast({
             command: "console-group-collapsed",
-            args: [groupName]
+            args: args.map(a => mapValue(a))
         });
     };
 
