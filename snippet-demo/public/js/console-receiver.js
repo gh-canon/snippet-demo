@@ -350,6 +350,7 @@
     function clearEntries(keepN) {
         let removedLine;
         let objectIds;
+        keepN = Math.max(1, keepN);
         while (_snippetConsole.children.length > keepN) {
             removedLine = _snippetConsole.removeChild(_snippetConsole.firstElementChild);
             objectIds = [...removedLine.querySelectorAll(".console-value-unprocessed[data-id]")].map(o => o.dataset.id);
@@ -428,7 +429,7 @@
                 groupEnd();
                 break;
             case "console-clear":
-                clearEntries(1);
+                clearEntries(0);
                 break;
             case "console-error":
                 createSoloLogEntry(...data.args).classList.add("console-line-error");
