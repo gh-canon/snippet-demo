@@ -67,6 +67,10 @@ iframe {
     animation: none;
     background-color: #333;
 }
+.console-line-feedback {
+    color: #7f7f7f;
+    font-style: italic;
+}
 textarea.console-line-content {
     font-family: inherit;
     font-size: inherit;
@@ -86,6 +90,7 @@ textarea.console-line-content {
 }
 .console-value[data-id] {
     cursor: default;
+    color: #d5d5d5;
 }
 .editor-tile{
     background-color: #333;
@@ -169,10 +174,6 @@ dd > .console-value > .console-value-label::before {
 .console-value[data-type="boolean"],
 .console-value[data-type="number"] {
     color: #9980ff;
-}
-
-.console-value[data-type="object"]:not([data-sub-type="RegExp"]):not([data-sub-type="Date"]){
-    font-style: italic;
 }
 
 dl .console-value[data-type="object"]:not([data-sub-type="RegExp"]):not([data-sub-type="Date"]) {

@@ -359,6 +359,11 @@
         if (!_consoleContentTarget.closest(".snippet-console")) {
             _consoleContentTarget = _snippetConsole;
         }
+        if (keepN == 1) {
+            let entry = createLogEntry({ type: "string", value: "Console was cleared" });
+            entry.classList.add("console-line-feedback");
+            _snippetConsole.insertBefore(entry, _snippetConsole.firstElementChild);
+        }
     }
 
     function appendEntry(entry) {
