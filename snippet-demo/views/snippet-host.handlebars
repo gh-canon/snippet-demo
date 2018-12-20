@@ -17,7 +17,7 @@
             <textarea class="console-line-content" id="console-input" spellcheck="false"></textarea>
         </div>
     </div>
-    <form method="post" action="/snippet-render" target="snippet-render-frame">
+    <form method="post" action="{{renderPath}}/snippet-render" target="snippet-render-frame">
         <input type="hidden" name="html" value="{{html}}" />
         <input type="hidden" name="js" value="{{js}}" />
         <input type="hidden" name="css" value="{{css}}" />

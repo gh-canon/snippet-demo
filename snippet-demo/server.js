@@ -26,8 +26,10 @@ app.get("/snippet-host", (req, res) => {
     res.render("snippet-host");
 });
 
-app.post("/snippet-host", (req, res) => {
+app.post("/snippet-host", (req, res) => {    
+    console.log(req.hostname);
     res.render("snippet-host", {
+        renderPath: req.hostname === "localhost" ? "" : "https://snippetrender.canoncode.com",
         html: Buffer.from(req.body.html || "").toString("base64"),
         js: Buffer.from(req.body.js || "").toString("base64"),
         css: Buffer.from(req.body.css || "").toString("base64")
