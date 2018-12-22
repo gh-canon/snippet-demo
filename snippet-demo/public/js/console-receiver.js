@@ -547,11 +547,13 @@
     }
 
     function addInputHistoryItem(text) {
-        _inputHistory.push(text);
-        if (_inputHistory.length > 10) {
-            _inputHistory.shift();
+        if (_inputHistory[_inputHistory.length - 1] !== text) {
+            _inputHistory.push(text);
+            if (_inputHistory.length > 10) {
+                _inputHistory.shift();
+            }
+            saveInputHistory();            
         }
-        saveInputHistory();
         _inputHistoryIndex = _inputHistory.length - 1;
     }
 
@@ -606,6 +608,18 @@
         }
     }
 
+    function isCaratOnFirstLine() {
+        if (_consoleInput.selectionStart !== _consoleInput.selectionEnd) return;
+        let firstIndexOfNewLine = _consoleInput.value.indexOf("\n");
+        return firstIndexOfNewLine === -1 || _consoleInput.selectionStart <= firstIndexOfNewLine;
+    }
+
+    function isCaratOnLastLine() {
+        if (_consoleInput.selectionStart !== _consoleInput.selectionEnd) return;
+        let lastIndexOfNewLine = _consoleInput.value.lastIndexOf("\n");
+        return lastIndexOfNewLine === -1 || _consoleInput.selectionStart > lastIndexOfNewLine || _consoleInput.selectionStart === _consoleInput.value.length - 1;
+    }
+
     _consoleInput.addEventListener("input", updateTextAreaSize);  
 
     _consoleInput.addEventListener("keydown", function (e) {
@@ -614,16 +628,16 @@
                 if (!e.shiftKey) processInput(e);
                 break;
             case 38:
-                if (e.altKey) applyPreviousInputHistoryItem(e);
+                if (!e.shiftKey && isCaratOnFirstLine()) applyPreviousInputHistoryItem(e);
                 break;
             case 104:
-                if (e.altKey) applyPreviousInputHistoryItem(e);
+                if (!e.shiftKey && isCaratOnFirstLine()) applyPreviousInputHistoryItem(e);
                 break;
             case 40:
-                if (e.altKey) applyNextInputHistoryItem(e);
+                if (!e.shiftKey && isCaratOnLastLine()) applyNextInputHistoryItem(e);
                 break;
             case 98:
-                if (e.altKey) applyNextInputHistoryItem(e);
+                if (!e.shiftKey && isCaratOnLastLine()) applyNextInputHistoryItem(e);
                 break;
         }
     });  
