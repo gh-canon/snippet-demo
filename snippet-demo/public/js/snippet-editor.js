@@ -1,12 +1,14 @@
 ﻿(() => {
 
-    let editTimeoutHandle;
+    const form = document.forms[0];
 
-    document.querySelector("form").addEventListener("input", e => {
+    let editTimeoutHandle;        
+
+    form.addEventListener("input", e => {
         clearTimeout(editTimeoutHandle);
-        editTimeoutHandle = setTimeout(() => document.forms[0].submit(), 1000);
+        editTimeoutHandle = setTimeout(() => form.submit(), 1000);
     });
 
-    document.forms[0].submit();
+    form.submit();
 
 })();
