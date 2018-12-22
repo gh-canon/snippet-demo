@@ -19,19 +19,9 @@ for (let jsFileName of ["console-dispatcher", "console-receiver"]) {
     });
 }
 
-function requireHttps(req, res, next) {
-    if (req.secure || req.hostname === "localhost") {
-        next();
-    } else {
-        res.redirect("https://" + req.hostname + req.url);        
-    }
-}
-
 app.engine("handlebars", expressHandlebars());
 
 app.set("view engine", "handlebars");
-
-app.use(requireHttps);
 
 app.use(compression());
 
