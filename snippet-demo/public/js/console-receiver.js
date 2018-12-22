@@ -10,6 +10,10 @@
 
     const _consoleInput = document.getElementById("console-input");
 
+    const _inputHistory = JSON.parse(localStorage.getItem("console-input-history") || "[]");
+
+    let _inputHistoryIndex = -1;
+
     let _consoleContentTarget = _snippetConsole;
 
     function hydrate(...values) {
@@ -538,29 +542,90 @@
 
     });
 
-    _consoleInput.addEventListener("input", function (e) {
-        let textarea = e.target;
-        textarea.style.height = "100%";
-        if (textarea.clientHeight < textarea.scrollHeight) {
-            textarea.style.height = textarea.scrollHeight + "px";
-        }
-    });    
+    function saveInputHistory() {
+        localStorage.setItem("console-input-history", JSON.stringify(_inputHistory));
+    }
 
-    _consoleInput.addEventListener("keydown", function (e) {
-        if (e.which !== 13 || e.shiftKey) return;
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
+    function addInputHistoryItem(text) {
+        _inputHistory.push(text);
+        if (_inputHistory.length > 10) {
+            _inputHistory.shift();
+        }
+        saveInputHistory();
+        _inputHistoryIndex = _inputHistory.length - 1;
+    }
+
+    function applyPreviousInputHistoryItem(e) {
+        let textarea = e.target;
+        if (_inputHistoryIndex < 0) {
+            _inputHistoryIndex = _inputHistory.length - 1;
+        }
+        textarea.value = _inputHistory[_inputHistoryIndex--] || "";        
+        updateTextAreaSize();
+        textarea.scrollIntoView();
+        handleEvent(e);
+    }
+
+    function applyNextInputHistoryItem(e) {
+        let textarea = e.target;
+        if (_inputHistoryIndex > _inputHistory.length) {
+            _inputHistoryIndex = _inputHistory.length - 1;
+        }
+        textarea.value = _inputHistory[_inputHistoryIndex++] || "";        
+        updateTextAreaSize();
+        textarea.scrollIntoView();
+        handleEvent(e);
+    }
+  
+
+    function processInput(e) {
         let textarea = e.target;
         let text = textarea.value;
+        addInputHistoryItem(text);
         let entry = createSoloLogEntry({ type: "string", value: text });
         entry.classList.add("console-line-echo");
         _broadcast(({
             command: "eval",
             args: text
-        }));       
+        }));
         textarea.value = "";
         textarea.style.height = "100%";
+        handleEvent(e);
+    }
+
+    function handleEvent(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation(); 
+    }
+
+    function updateTextAreaSize() {
+        _consoleInput.style.height = "100%";
+        if (_consoleInput.clientHeight < _consoleInput.scrollHeight) {
+            _consoleInput.style.height = _consoleInput.scrollHeight + "px";
+        }
+    }
+
+    _consoleInput.addEventListener("input", updateTextAreaSize);  
+
+    _consoleInput.addEventListener("keydown", function (e) {
+        switch (e.which) {
+            case 13:
+                if (!e.shiftKey) processInput(e);
+                break;
+            case 38:
+                if (e.altKey) applyPreviousInputHistoryItem(e);
+                break;
+            case 104:
+                if (e.altKey) applyPreviousInputHistoryItem(e);
+                break;
+            case 40:
+                if (e.altKey) applyNextInputHistoryItem(e);
+                break;
+            case 98:
+                if (e.altKey) applyNextInputHistoryItem(e);
+                break;
+        }
     });  
 
     let form = document.forms[0];

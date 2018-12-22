@@ -12,29 +12,29 @@
 
     const _parent = window.parent;
 
-    const _log = console.log.bind(_console);
+    const _log = _console.log.bind(_console);
 
-    const _dir = console.dir.bind(_console);
+    const _dir = _console.dir.bind(_console);
 
-    const _info = console.info.bind(_console);
+    const _info = _console.info.bind(_console);
 
-    const _warn = console.warn.bind(_console);
+    const _warn = _console.warn.bind(_console);
 
-    const _error = console.error.bind(_console);
+    const _error = _console.error.bind(_console);
 
-    const _clear = console.clear.bind(_console);
+    const _clear = _console.clear.bind(_console);
 
-    const _time = console.time.bind(_console);
+    const _time = _console.time.bind(_console);
 
-    const _timeEnd = console.timeEnd.bind(_console);
+    const _timeEnd = _console.timeEnd.bind(_console);
 
-    const _assert = console.assert.bind(_console);
+    const _assert = _console.assert.bind(_console);
 
-    const _group = console.group.bind(_console);
+    const _group = _console.group.bind(_console);
 
-    const _groupCollapsed = console.groupCollapsed.bind(_console);
+    const _groupCollapsed = _console.groupCollapsed.bind(_console);
 
-    const _groupEnd = console.groupEnd.bind(_console);
+    const _groupEnd = _console.groupEnd.bind(_console);
 
     const _timeKeeper = {};
 
@@ -65,8 +65,11 @@
                 subType: "Array"
             };
         }
-        else if (type === "object" || type === "function") {
-            if (value === null) {
+        else if (type === "object" || type === "function" || type === "undefined") {
+            if (value === undefined) {
+                // thanks to weird host objects, sometimes "undefined" isn't undefined...
+                return { type: "undefined", value: "undefined" };
+            } else if (value === null) {
                 return { type: "null", value: "null" };
             } else {
                 _cache[++_objectCounter] = value;
@@ -84,11 +87,6 @@
                 }
                 return stub;
             }
-        } else if (type === "undefined") {
-            return {
-                type: type,
-                value: "undefined"
-            };
         }
         else {
             return {
@@ -215,12 +213,12 @@
         _dir(arg);
     };
 
-    console.info = function SnippetProxyInfo(arg) {
+    console.info = function SnippetProxyInfo(...args) {
         _broadcast({
             command: "console-info",
             args: [mapValue(arg)]
         });
-        _dir(arg);
+        _info(...args);
     };
 
     console.warn = function SnippetProxyWarn(arg) {

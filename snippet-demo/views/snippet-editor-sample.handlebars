@@ -11,87 +11,55 @@
         <label for="html">html</label>
         <label for="js">js</label>
         <label for="css">css</label>
-        <textarea id="html" name="html" spellcheck="false">&lt;div&gt;
-  &lt;h1&gt;Sample Title&lt;/h1&gt;
-  &lt;p&gt;Sample lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;
-  &lt;img src="https://lorempixel.com/400/200/" alt="lorem pixel" height="200" width="400"&gt;
-&lt;/div&gt;</textarea>
-        <textarea id="js" name="js" spellcheck="false">(() =&gt; {
+        <textarea id="html" name="html" spellcheck="false">&lt;svg viewBox="0 0 121.8 121.6" fill="rgba(255,255,255,.5)"&gt;
+    &lt;style&gt;
+        .outer-arc {
+            animation: anim-spin 10s linear infinite;
+            transform-origin: 50% 50%;
+        }
 
-  let values = [
-    "test",
-    true,
-    1337,
-    Infinity,
-    NaN,
-    window,
-    /(?:)/,
-    Symbol("foo"),
-    new Map([["a",1],[window,1337]]),
-    new Set(["a","b","c","d"]),
-    new Date,
-  ];
+        .inner-arc {
+            animation: anim-spin 10s infinite linear reverse;
+            transform-origin: 50% 50%;
+        }
 
-  values.push(values);
+        .pie-slice {
+            animation: anim-spin 40s infinite linear;
+            transform-origin: 50% 50%;
+        }
 
-  console.time("sample timer");
+        @keyframes anim-spin {
+            from {
+                transform: rotate(0deg);
+            }
 
-  console.group("group 1");  
-
-  console.group("group 2");  
-
-  console.log("array with circular reference: %o", values);
-
-  setTimeout(() =&gt; {
-   console.groupEnd();
-   console.timeEnd("sample timer");
-   console.groupEnd();
-   console.log(document.body);
-  }, 15);
-
-  document.addEventListener("wheel", e =&gt; console.log(e));
-
-  throw new Error("sample error");
-
-})();</textarea>
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    &lt;/style&gt;
+    &lt;path id="outer-arc-top" class="outer-arc" d="M111.7,60.8c0-28-22.7-50.6-50.6-50.6S10.4,32.8,10.4,60.8H0.2C0.2,27.2,27.5,0,61,0c33.6,0,60.8,27.2,60.8,60.8H111.7z" /&gt;
+    &lt;path id="inner-arc-top" class="inner-arc" d="M61,14.2c25.7,0,46.6,20.9,46.6,46.6H97.5c0-20.2-16.3-36.5-36.5-36.5c-20.2,0-36.5,16.3-36.5,36.5H14.4C14.4,35,35.3,14.2,61,14.2z" /&gt;
+    &lt;path id="pie-slice-top" class="pie-slice" d="M78.4,33.5L61,57.4L43.7,33.5c5-3.2,11-5.1,17.4-5.1C67.4,28.4,73.4,30.3,78.4,33.5z" /&gt;
+    &lt;path id="pie-slice-right" class="pie-slice" d="M93.5,60.8c0,2.8-0.4,5.5-1,8.1l-28.1-9.1l17.4-23.9C88.9,41.8,93.5,50.7,93.5,60.8z" /&gt;
+    &lt;path id="pie-slice-bottom-right" class="pie-slice" d="M63.1,93.1V63.6l28.1,9.1C86.7,84.1,75.9,92.3,63.1,93.1z" /&gt;
+    &lt;path id="pie-slice-bottom-left" class="pie-slice" d="M30.9,72.7L59,63.6v29.5C46.2,92.3,35.4,84.1,30.9,72.7z" /&gt;
+    &lt;path id="pie-slice-left" class="path pie-slice" d="M28.6,60.8c0-10.1,4.6-19,11.8-25l17.4,23.9l-28.1,9.1C29,66.3,28.6,63.6,28.6,60.8z" /&gt;
+    &lt;path id="inner-arc-bottom" class="inner-arc" d="M107.5,64.9c-2.1,23.8-22,42.6-46.4,42.6S16.7,88.7,14.6,64.9h10.2c2,18.3,17.5,32.5,36.3,32.5c18.8,0,34.3-14.2,36.3-32.5H107.5z" /&gt;
+    &lt;path id="outer-arc-bottom" class="outer-arc" d="M61,111.4c26.6,0,48.4-20.5,50.4-46.6h10.2c-2.1,31.7-28.4,56.7-60.6,56.7S2.5,96.5,0.4,64.9h10.2C12.7,90.9,34.4,111.4,61,111.4z" /&gt;
+&lt;/svg&gt;</textarea>
+        <textarea id="js" name="js" spellcheck="false">console.log(document.querySelector("svg"));</textarea>
         <textarea id="css" name="css" spellcheck="false">html,body {
-  margin: 0;
-  padding: 0;
+  margin:0;
+  padding:0;
 }
-body {
-  box-sizing: border-box;
-  min-height: 100vh;
-  font-family: sans-serif;
-  font-size: 11pt;
-  color: #d5d5d5;
-  background-color: #111;
-}
-body::before {
-  content: "";
+svg {
+  height: 100vh;
+  width: calc(100vh * 0.9983579638);
   display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('https://lorempixel.com/400/200/');
-  background-size: cover;
-  filter: blur(30px);
-  opacity: .33;
-  z-index: -1;
-}
-div {
-  box-sizing: border-box;
-  min-height: 100vh;
-  max-width: 700px;
   margin: 0 auto;
-  padding: 30px 60px 60px 60px;  
-  background-color: rgba(66,66,66,.25);
-}
-p {
-  line-height: 1.5em;
 }</textarea>
-        <iframe class="output-frame" id="snippet-host-frame" name="snippet-host-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts"></iframe>
+        <iframe class="output-frame" id="snippet-host-frame" name="snippet-host-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts allow-same-origin"></iframe>
     </form>
     <script src="/js/snippet-editor.js"></script>
 </body>
