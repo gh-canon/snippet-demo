@@ -393,7 +393,6 @@
         if (e.error && e.error.__broadcast__ !== false) {
             broadcastError(e.error);
         } else {
-            _log(e);
             _broadcast({
                 command: "console-error",
                 args: [mapValue("Uncaught %o"), mapValue(e)]
