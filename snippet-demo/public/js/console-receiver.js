@@ -10,11 +10,28 @@
 
     const _consoleInput = document.getElementById("console-input");
 
-    const _inputHistory = JSON.parse(localStorage.getItem("console-input-history") || "[]");
+    const _inputHistory = getInputHistory();
 
     let _inputHistoryIndex = -1;
 
     let _consoleContentTarget = _snippetConsole;
+
+    function getInputHistory() {
+        try {
+            let inputHistoryJSON = localStorage.getItem("console-input-history");
+            return JSON.parse(inputHistoryJSON);
+        } catch (err) {
+            return [];
+        }
+    }
+
+    function saveInputHistory() {
+        try {
+            localStorage.setItem("console-input-history", JSON.stringify(_inputHistory));
+        } catch (err) {
+            // :(
+        }
+    }
 
     function hydrate(...values) {
 
@@ -351,6 +368,10 @@
         }
     }
 
+    function scrollToLast() {
+        _snippetConsole.scrollTop = _snippetConsole.lastElementChild.offsetTop;
+    }
+
     function clearEntries(keepN) {
         let removedLine;
         let objectIds;
@@ -377,7 +398,8 @@
             _consoleContentTarget.appendChild(entry);
         }
         clearEntries(_maxEntries);
-        _snippetConsole.lastElementChild.scrollIntoView(false);
+
+        scrollToLast();
     }
 
     function createConsoleGroup(...args) {
@@ -542,10 +564,6 @@
 
     });
 
-    function saveInputHistory() {
-        localStorage.setItem("console-input-history", JSON.stringify(_inputHistory));
-    }
-
     function addInputHistoryItem(text) {
         if (_inputHistory[_inputHistory.length - 1] !== text) {
             _inputHistory.push(text);
@@ -607,7 +625,7 @@
         }
         textarea.value = _inputHistory[_inputHistoryIndex--] || "";
         updateTextAreaSize(textarea);
-        textarea.scrollIntoView();
+        scrollToLast();
         handleEvent(e);
     }
 
@@ -620,7 +638,7 @@
         }
         textarea.value = _inputHistory[_inputHistoryIndex++] || "";
         updateTextAreaSize(textarea);
-        textarea.scrollIntoView();
+        scrollToLast();
         handleEvent(e);
     }
 
