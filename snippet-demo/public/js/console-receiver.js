@@ -557,30 +557,33 @@
         _inputHistoryIndex = _inputHistory.length - 1;
     }
 
-    function applyPreviousInputHistoryItem(e) {
-        let textarea = e.target;
-        if (_inputHistoryIndex < 0) {
-            _inputHistoryIndex = _inputHistory.length - 1;
-        }
-        textarea.value = _inputHistory[_inputHistoryIndex--] || "";        
-        updateTextAreaSize();
-        textarea.scrollIntoView();
-        handleEvent(e);
+    function handleEvent(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation(); 
     }
 
-    function applyNextInputHistoryItem(e) {
-        let textarea = e.target;
-        if (_inputHistoryIndex > _inputHistory.length) {
-            _inputHistoryIndex = _inputHistory.length - 1;
+    function updateTextAreaSize(textarea) {
+        textarea.style.height = "100%";
+        if (textarea.clientHeight < textarea.scrollHeight) {
+            textarea.style.height = textarea.scrollHeight + "px";
         }
-        textarea.value = _inputHistory[_inputHistoryIndex++] || "";        
-        updateTextAreaSize();
-        textarea.scrollIntoView();
-        handleEvent(e);
     }
-  
 
-    function processInput(e) {
+    function isCaratOnFirstLine(input) {
+        if (input.selectionStart !== input.selectionEnd) return;
+        let firstIndexOfNewLine = input.value.indexOf("\n");
+        return firstIndexOfNewLine === -1 || input.selectionStart <= firstIndexOfNewLine;
+    }
+
+    function isCaratOnLastLine(input) {
+        if (input.selectionStart !== input.selectionEnd) return;
+        let lastIndexOfNewLine = input.value.lastIndexOf("\n");
+        return lastIndexOfNewLine === -1 || input.selectionStart > lastIndexOfNewLine || input.selectionStart === input.value.length - 1;
+    }
+
+    function consoleInputEnterHandler(e) {
+        if (e.shiftKey) return;
         let textarea = e.target;
         let text = textarea.value;
         addInputHistoryItem(text);
@@ -595,49 +598,52 @@
         handleEvent(e);
     }
 
-    function handleEvent(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation(); 
-    }
-
-    function updateTextAreaSize() {
-        _consoleInput.style.height = "100%";
-        if (_consoleInput.clientHeight < _consoleInput.scrollHeight) {
-            _consoleInput.style.height = _consoleInput.scrollHeight + "px";
+    function consoleInputUpArrowHandler(e) {
+        if (e.shiftKey) return;
+        let textarea = e.target;
+        if (!isCaratOnFirstLine(textarea)) return;
+        if (_inputHistoryIndex < 0) {
+            _inputHistoryIndex = _inputHistory.length - 1;
         }
+        textarea.value = _inputHistory[_inputHistoryIndex--] || "";
+        updateTextAreaSize(textarea);
+        textarea.scrollIntoView();
+        handleEvent(e);
     }
 
-    function isCaratOnFirstLine() {
-        if (_consoleInput.selectionStart !== _consoleInput.selectionEnd) return;
-        let firstIndexOfNewLine = _consoleInput.value.indexOf("\n");
-        return firstIndexOfNewLine === -1 || _consoleInput.selectionStart <= firstIndexOfNewLine;
+    function consoleInputDownArrowHandler(e) {
+        if (e.shiftKey) return;
+        let textarea = e.target;
+        if (!isCaratOnLastLine(textarea)) return;
+        if (_inputHistoryIndex > _inputHistory.length) {
+            _inputHistoryIndex = _inputHistory.length - 1;
+        }
+        textarea.value = _inputHistory[_inputHistoryIndex++] || "";
+        updateTextAreaSize(textarea);
+        textarea.scrollIntoView();
+        handleEvent(e);
     }
 
-    function isCaratOnLastLine() {
-        if (_consoleInput.selectionStart !== _consoleInput.selectionEnd) return;
-        let lastIndexOfNewLine = _consoleInput.value.lastIndexOf("\n");
-        return lastIndexOfNewLine === -1 || _consoleInput.selectionStart > lastIndexOfNewLine || _consoleInput.selectionStart === _consoleInput.value.length - 1;
-    }
-
-    _consoleInput.addEventListener("input", updateTextAreaSize);  
+    _consoleInput.addEventListener("input", function (e) {
+        updateTextAreaSize(e.target);
+    });  
 
     _consoleInput.addEventListener("keydown", function (e) {
         switch (e.which) {
             case 13:
-                if (!e.shiftKey) processInput(e);
+                consoleInputEnterHandler(e);
                 break;
             case 38:
-                if (!e.shiftKey && isCaratOnFirstLine()) applyPreviousInputHistoryItem(e);
+                consoleInputUpArrowHandler(e);
                 break;
             case 104:
-                if (!e.shiftKey && isCaratOnFirstLine()) applyPreviousInputHistoryItem(e);
+                consoleInputUpArrowHandler(e);
                 break;
             case 40:
-                if (!e.shiftKey && isCaratOnLastLine()) applyNextInputHistoryItem(e);
+                consoleInputDownArrowHandler(e);
                 break;
             case 98:
-                if (!e.shiftKey && isCaratOnLastLine()) applyNextInputHistoryItem(e);
+                consoleInputDownArrowHandler(e);
                 break;
         }
     });  
