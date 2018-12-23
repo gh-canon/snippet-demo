@@ -19,7 +19,12 @@
     function getInputHistory() {
         try {
             let inputHistoryJSON = localStorage.getItem("console-input-history");
-            return JSON.parse(inputHistoryJSON);
+            let history = JSON.parse(inputHistoryJSON);
+            if (history instanceof Array) {
+                return history;
+            } else {
+                return [];
+            }
         } catch (err) {
             return [];
         }
