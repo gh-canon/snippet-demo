@@ -41,6 +41,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="server.js" />
+    <Content Include=".gitignore" />
     <Content Include="package.json" />
     <Content Include="public\css\img\console-icons.svg" />
     <Content Include="public\css\img\favicon.png" />

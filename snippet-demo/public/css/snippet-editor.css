@@ -5,7 +5,7 @@
 .editor {
     display: grid;
     grid-template-columns: auto auto auto;
-    grid-template-rows: min-content auto auto;
+    grid-template-rows: min-content min-content auto 50%;
     height: 100vh;
     background-color: #000;
     color: #d5d5d5;
@@ -24,7 +24,10 @@
     pointer-events: none;
 }
 label,
-textarea {
+textarea,
+button,
+a,
+h1 {
     background-image: linear-gradient(135deg, #444, #333);
     padding: 3px 6px;
     background-color: #333;
@@ -33,7 +36,7 @@ textarea {
     border: none;
     font-family: "Ubuntu Mono", monospace;
     font-size: 10pt;
-    color: #fff;
+    color: inherit;
     resize: none;    
     white-space: pre-wrap;
 }
@@ -48,20 +51,56 @@ iframe {
     box-sizing: border-box;
     background-color: #333;
 }
-
+menu {
+    grid-row: 1;
+    grid-column: 1/4;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto min-content min-content;
+    grid-gap: 1px;
+    background-color: #000;
+}
+h1 {
+    padding: 10px 20px 10px 6px;
+    margin: 0;
+    font-size: 1em;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+}
+img{
+    height: 16px;
+    width: 16px;
+    margin-right: .35em;
+}
+button, a {
+    border: 0;
+    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+}
+button:active,
+a:active {
+    background-image: linear-gradient(315deg, #444, #333);
+}
 ::-webkit-scrollbar {
     width: .5em;
     height: .5em;
 }
-
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
     background: #222;
     border-left: 1px solid #000;
 }
-
 ::-webkit-scrollbar-thumb {
     background: #4e4e4e;
     outline: 1px solid #000;
     border-left: 1px solid #000;
+}
+::-webkit-scrollbar-thumb:horizontal {
+    border-left: none;
+    border-top: 1px solid #000;
 }

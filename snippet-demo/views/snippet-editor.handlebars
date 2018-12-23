@@ -9,6 +9,11 @@
 </head>
 <body>
     <form class="editor" action="/snippet-host" method="POST" target="snippet-host-frame">
+        <menu>
+            <h1><img src="/css/img/favicon.png" />snippet-editor</h1>
+            <button title="{shift}+{ctrl}+{e}" type="submit">run()</button>
+            <a href="/">new()</a>
+        </menu>
         <label for="html">html</label>
         <label for="js">js</label>
         <label for="css">css</label>
@@ -17,6 +22,6 @@
         <textarea id="css" name="css" spellcheck="false"></textarea>
         <iframe class="output-frame" id="snippet-host-frame" name="snippet-host-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts allow-same-origin"></iframe>
     </form>
-    <script src="/js/snippet-editor.js"></script>
+    <script src="/js/snippet-editor.babel.js"></script>
 </body>
 </html>

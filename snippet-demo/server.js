@@ -11,7 +11,8 @@ const minify = require('@node-minify/core');
 const babelMinify = require('@node-minify/babel-minify');
 const jsdir = path.join(__dirname, "public", "js");
 
-for (let jsFileName of ["console-dispatcher", "console-receiver"]) {
+
+for (let jsFileName of ["snippet-editor", "console-dispatcher", "console-receiver"]) {
     minify({
         compressor: babelMinify,
         input: path.join(jsdir, `${jsFileName}.js`),
