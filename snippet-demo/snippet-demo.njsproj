@@ -43,6 +43,7 @@
     <Compile Include="server.js" />
     <Content Include="package.json" />
     <Content Include="public\css\img\console-icons.svg" />
+    <Content Include="public\css\img\favicon.png" />
     <Content Include="public\css\snippet-editor.css">
       <SubType>Code</SubType>
     </Content>
