@@ -652,7 +652,6 @@
     });  
 
     _consoleInput.addEventListener("keydown", function (e) {
-        console.log(e.which);
         switch (e.which) {
             case 13:
                 consoleInputEnterHandler(e);
