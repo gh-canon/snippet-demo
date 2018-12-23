@@ -12,7 +12,7 @@
 
     const _inputHistory = getInputHistory();
 
-    let _inputHistoryIndex = -1;
+    let _inputHistoryIndex = _inputHistory.length - 1;
 
     let _consoleContentTarget = _snippetConsole;
 
@@ -637,9 +637,9 @@
     function consoleInputDownArrowHandler(e) {
         if (e.shiftKey) return;
         let textarea = e.target;
-        if (!isCaratOnLastLine(textarea)) return;
-        if (_inputHistoryIndex > _inputHistory.length) {
-            _inputHistoryIndex = _inputHistory.length - 1;
+        if (!isCaratOnLastLine(textarea)) return;        
+        if (_inputHistoryIndex >= _inputHistory.length) {
+            _inputHistoryIndex = 0;
         }
         textarea.value = _inputHistory[_inputHistoryIndex++] || "";
         updateTextAreaSize(textarea);
@@ -652,6 +652,7 @@
     });  
 
     _consoleInput.addEventListener("keydown", function (e) {
+        console.log(e.which);
         switch (e.which) {
             case 13:
                 consoleInputEnterHandler(e);
