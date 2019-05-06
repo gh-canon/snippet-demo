@@ -373,6 +373,13 @@
 
     window.addEventListener("message", messageEventHandler);
 
+    window.addEventListener("unload", function UnloadHandler(e) {
+        _broadcast({
+            command: "console-info",
+            args: [mapValue("Navigating. Console is now unstable.")]
+        });
+    });
+
     function broadcastError(error) {
         let errorString = `${error.name}: ${error.message}`;
         let stack = error.stack;

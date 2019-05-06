@@ -1,0 +1,7 @@
+﻿.editor-tile:first-child,
+#snippet-render-frame {
+    display: none !important;
+}
+body{
+    grid-template-columns: auto;
+}

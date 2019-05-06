@@ -48,12 +48,14 @@
     <Content Include="public\css\snippet-editor.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="public\css\snippet-console-only.css" />
     <Content Include="public\css\snippet-host-dark.css" />
     <Content Include="README.md" />
     <Content Include="views\snippet-editor-sample.handlebars" />
     <Content Include="views\snippet-editor.handlebars">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="views\snippet-console-only.handlebars" />
     <Content Include="views\snippet-render.handlebars">
       <SubType>Code</SubType>
     </Content>

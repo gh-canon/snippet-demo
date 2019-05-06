@@ -114,6 +114,10 @@ dt,dd{
 dt {
     color: #d267da;
 }
+dt.console-property-expanded::before {
+    position: absolute;
+    transform: translate(-11px,2px);
+}
 dt[data-proxy="true"]{
     font-style: italic;
 }

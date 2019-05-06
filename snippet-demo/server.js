@@ -51,11 +51,24 @@ app.post("/snippet-host", (req, res) => {
     });
 });
 
+app.get("/snippet-console-only", (req, res) => {
+    res.render("snippet-console-only");
+});
+
+app.post("/snippet-console-only", (req, res) => {
+    res.render("snippet-console-only", {
+        renderPath: req.hostname === "localhost" ? "" : "https://snippetrender.canoncode.com",
+        html: Buffer.from(req.body.html || "").toString("base64"),
+        js: Buffer.from(req.body.js || "").toString("base64"),
+        css: Buffer.from(req.body.css || "").toString("base64")
+    });
+});
+
 app.post("/snippet-render", (req, res) => {
     res.render("snippet-render", {
         html: Buffer.from(req.body.html, "base64").toString(),
-        js: Buffer.from(req.body.js, "base64").toString(),
-        css: Buffer.from(req.body.css, "base64").toString()
+        js: req.body.js,
+        css: req.body.css
     });
 });
 

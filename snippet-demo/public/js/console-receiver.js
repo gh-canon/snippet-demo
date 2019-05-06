@@ -561,9 +561,9 @@
 
         if (dt.classList.contains("console-property-expanded")) {
             dt.classList.remove("console-property-expanded");
-            dt.classList.add("console-property-collaped");
+            dt.classList.add("console-property-collapsed");
         } else {
-            dt.classList.remove("console-property-collaped");
+            dt.classList.remove("console-property-collapsed");
             dt.classList.add("console-property-expanded");            
         }
 
