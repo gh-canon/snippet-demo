@@ -1,3 +1,3 @@
-﻿<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8" /><title></title><script src="/js/console-dispatcher.babel.js"></script>{{#if css}}<link href="data:text/css;base64,{{{css}}}">{{/if}}</head><body>{{#if html}}
-{{{html}}}{{/if}}{{#if js}}<script src="data:text/javascript;base64,{{{js}}}"></script>{{/if}}</body>
+﻿<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8" /><title></title><script src="/js/console-dispatcher.babel.js"></script>{{#if hasCss}}<link href="{{renderPath}}/snippet-render/{{demoId}}/css" rel="stylesheet">{{/if}}</head><body>{{#if html}}
+{{{html}}}{{/if}}{{#if hasJs}}<script src="{{renderPath}}/snippet-render/{{demoId}}/js"></script>{{/if}}</body>
 </html>

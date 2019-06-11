@@ -31,6 +31,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="modules\encoder.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="public\js\console-dispatcher.js">
       <SubType>Code</SubType>
     </Compile>
@@ -62,6 +65,7 @@
     <Content Include="views\snippet-host.handlebars" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="modules\" />
     <Folder Include="public\css\" />
     <Folder Include="public\css\img\" />
     <Folder Include="views\" />

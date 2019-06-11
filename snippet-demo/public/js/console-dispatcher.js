@@ -323,7 +323,7 @@
     function processEval(evalText) {
         let evalResponse;
         try {
-            evalResponse = eval(evalText);
+            evalResponse = eval(`(${evalText})`);
             _broadcast({
                 command: "eval-result",
                 args: mapValue(evalResponse)

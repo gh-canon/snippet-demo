@@ -10,7 +10,12 @@ const app = express();
 const minify = require('@node-minify/core');
 const babelMinify = require('@node-minify/babel-minify');
 const jsdir = path.join(__dirname, "public", "js");
-
+const maxRetentionMilliseconds = 1e4;
+const encodingAlphabet = "23456789CFGHJMPQRVWX";
+const encoder = require("./modules/encoder.js")(encodingAlphabet);
+const demoIdToken = `:demoId([${encodingAlphabet}]+\-[${encodingAlphabet}]+)`;
+const demos = {};
+let _demoId = 1337;
 
 for (let jsFileName of ["snippet-editor", "console-dispatcher", "console-receiver"]) {
     minify({
@@ -30,46 +35,119 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static("public"));
 
-app.get("/", (req, res) => {
-    res.render("snippet-editor");
+app.get(`/`, (req, res) => {
+
+    const demoId = `${encoder.encode(new Date())}-${encoder.encode(++_demoId)}`;
+
+    res.render("snippet-editor", {
+        demoId: demoId
+    });
+
 });
 
-app.get("/sample", (req, res) => {
-    res.render("snippet-editor-sample");
-});
+app.get(`/snippet-host`, (req, res) => {
 
-app.get("/snippet-host", (req, res) => {
-    res.render("snippet-host");
-});
+    const demoId = `${encoder.encode(new Date())}-${encoder.encode(++_demoId)}`;
 
-app.post("/snippet-host", (req, res) => {    
     res.render("snippet-host", {
         renderPath: req.hostname === "localhost" ? "" : "https://snippetrender.canoncode.com",
-        html: Buffer.from(req.body.html || "").toString("base64"),
-        js: Buffer.from(req.body.js || "").toString("base64"),
-        css: Buffer.from(req.body.css || "").toString("base64")
+        demoId: demoId
     });
+
 });
 
-app.get("/snippet-console-only", (req, res) => {
-    res.render("snippet-console-only");
-});
+app.post(`/snippet-host`, (req, res) => {    
 
-app.post("/snippet-console-only", (req, res) => {
-    res.render("snippet-console-only", {
+    const demoId = req.body.demoId;    
+
+    const demo = {};
+
+    if (req.body.html) {
+        demo.html = req.body.html;
+    }
+
+    if (req.body.css) {
+        demo.css = req.body.css;
+    }
+
+    if (req.body.js) {
+        demo.js = req.body.js;
+    }
+
+    demos[demoId] = demo;
+
+    setTimeout(function () {
+        delete demos[demoId];
+    }, maxRetentionMilliseconds);
+    
+    res.render("snippet-host", {
         renderPath: req.hostname === "localhost" ? "" : "https://snippetrender.canoncode.com",
-        html: Buffer.from(req.body.html || "").toString("base64"),
-        js: Buffer.from(req.body.js || "").toString("base64"),
-        css: Buffer.from(req.body.css || "").toString("base64")
+        demoId: demoId
     });
+
 });
 
-app.post("/snippet-render", (req, res) => {
+app.get(`/snippet-render/${demoIdToken}/js`, (req, res) => {
+
+    const demoId = req.params.demoId;
+
+    const demo = demos[demoId];       
+
+    if (!demo || !demo.js) {
+        res.status(404);
+        return;
+    }
+
+    const js = demo.js;
+
+    delete demo.js;
+
+    res.set("Content-Type", "text/javascript");
+
+    res.send(js);    
+
+});
+
+app.get(`/snippet-render/${demoIdToken}/css`, (req, res) => {
+
+    const demoId = req.params.demoId;
+
+    const demo = demos[demoId];
+
+    if (!demo || !demo.css) {
+        res.status(404);
+        return;
+    }
+
+    const css = demo.css;
+
+    delete demo.css;
+
+    res.set("Content-Type", "text/css");
+
+    res.send(css);   
+
+});
+
+app.get(`/snippet-render/${demoIdToken}`, (req, res) => {
+
+    const demoId = req.params.demoId;
+
+    const demo = demos[demoId];    
+
+    if (!demo) {
+        res.status(404);
+        return;
+    }
+
     res.render("snippet-render", {
-        html: Buffer.from(req.body.html, "base64").toString(),
-        js: req.body.js,
-        css: req.body.css
+        renderPath: req.hostname === "localhost" ? "" : "https://snippetrender.canoncode.com",
+        demoId: demoId,
+        html: demo.html,        
+        hasJs: "js" in demo,
+        hasCss: "css" in demo
     });
+
 });
 
 app.listen(port);

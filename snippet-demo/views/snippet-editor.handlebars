@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="/css/img/favicon.png" />
 </head>
 <body>
-    <form class="editor" action="/snippet-host" method="POST" target="snippet-host-frame">
+    <form class="editor" action="/snippet-host/" method="POST" target="snippet-host-frame">
         <menu>
             <h1><img src="/css/img/favicon.png" />snippet-editor</h1>
             <button title="{shift}+{ctrl}+{e}" type="submit">run()</button>
@@ -20,6 +20,7 @@
         <textarea id="html" name="html" spellcheck="false"></textarea>
         <textarea id="js" name="js" spellcheck="false"></textarea>
         <textarea id="css" name="css" spellcheck="false"></textarea>
+        <input name="demoId" type="hidden" value="{{demoId}}">
         <iframe class="output-frame" id="snippet-host-frame" name="snippet-host-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-scripts allow-same-origin"></iframe>
     </form>
     <script src="/js/snippet-editor.babel.js"></script>

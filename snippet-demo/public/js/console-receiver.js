@@ -671,8 +671,8 @@
         }
     });  
 
-    let form = document.forms[0];
-    form.submit();    
-    form.parentNode.removeChild(form);
+    //let form = document.forms[0];
+    //form.submit();    
+    //form.parentNode.removeChild(form);
 
 })();
